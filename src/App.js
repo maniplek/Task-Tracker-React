@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react/cjs/react.development';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
 import './index.css';
+import Footer from './components/Footer';
+// import About from './components/About';
 
 
 function App() {
@@ -21,11 +24,19 @@ function App() {
 
   //Fetch Tasks
   const fetchTasks = async (id) => {
-    const res = await fetch(`http://localhost:5000/tasks`)
+    const res = await fetch('http://localhost:5000/tasks')
     const data = await res.json()
 
     return data 
   }
+
+    //Fetch Task
+    const fetchTask = async (id) => {
+      const res = await fetch(`http://localhost:5000/tasks/${id}`)
+      const data = await res.json()
+  
+      return data 
+    }
 
 //Add task 
 const addTask = async (task) => {
@@ -62,7 +73,7 @@ const deleteTask = async (id) => {
 
 //Reminder
 const toggleReminder = async (id) => {
-  const taskToToggle = await fetchTasks(id)
+  const taskToToggle = await fetchTask(id)
   const updTask = {...taskToToggle,
   reminder: !taskToToggle.reminder}
 
@@ -85,7 +96,8 @@ const toggleReminder = async (id) => {
 }
 
   return (
-    <div className="container">
+    <Router>
+      <div className="container">
       <Header onAdd={() => setShowAddTask
       (!showAddTask)} showAdd={showAddTask} />
       {showAddTask && <AddTask onAdd={addTask} />}
@@ -93,7 +105,11 @@ const toggleReminder = async (id) => {
       onDelete={deleteTask}
       onToggle={toggleReminder} /> : (
         'No Task to Show')}
+        {/* <Route path='/about' component={About} /> */}
+        <Footer/>
     </div>
+    </Router>
+    
   );
 }
 
